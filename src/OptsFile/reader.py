@@ -2,8 +2,8 @@ import os
 import pathlib
 from typing import Any, Dict, List
 
-class OptsFileReader:
 
+class OptsFileReader:
     @staticmethod
     def _validate(filepath: pathlib.Path) -> None:
         """
