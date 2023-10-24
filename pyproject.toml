@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+max-line-length = 88
+
+[tool.flake8]
+ignore = ['E203']
+max-line-length = 88
+
+[tool.pytest.ini_options]
+testpaths = "test"
+pythonpath = "src"
+addopts = "--import-mode=importlib"
