@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 import abc
 from typing import Any, Dict, List, Optional
+
 
 class IReader(metaclass=abc.ABCMeta):
 
@@ -65,7 +67,7 @@ class IReader(metaclass=abc.ABCMeta):
         ...
 
 
-class IReadNode(metaclass = abc.ABCMeta):
+class IReadNode(metaclass=abc.ABCMeta):
 
     """
     This is a node interface which, when combined with other nodes, will form a tree
