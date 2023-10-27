@@ -1,1 +1,1 @@
-from .reader import OptsFileReader  # noqa: F401
+from .reader import Reader  # noqa: F401
