@@ -2,11 +2,10 @@ import os
 import pathlib
 from typing import Any, Dict, List
 
-from .abc import IReadNode, IReader
+from .abc import IReader, IReadNode
 
 
 class Reader(IReader):
-    
     def __init__(self, filename: str):
         """
         Constructor... this calls [`__init__`][OptsFile.abc.IReader] method.
@@ -18,7 +17,9 @@ class Reader(IReader):
 
         super(Reader, self).__init__(filename)
         self._filename: pathlib.Path = pathlib.Path(os.path.abspath(self._filename))
-        assert self._filename.exists(), f"***ERROR***:\t{self._filename} does not exist!"
+        assert (
+            self._filename.exists()
+        ), f"***ERROR***:\t{self._filename} does not exist!"
 
     def read_from_file(self) -> List[str]:
         """
