@@ -94,7 +94,7 @@ class Reader(IReader):
 
         if "\t" not in line and "    " not in line:
             raise ReaderError("***ERROR***:\tThe current line seems to be malformed!")
-        
+
         return "\t" if "\t" in line else "    "
 
     def parse_text(self, text: List[str], parser: object) -> Dict[Any, Any]:
