@@ -3,7 +3,7 @@ import pathlib
 from collections import namedtuple
 from typing import Any, Dict, List
 
-from .abc import IReader, IReadNode
+from .abc import IReader
 
 
 class Reader(IReader):
@@ -38,7 +38,7 @@ class Reader(IReader):
             text: List[str] = of.readlines()
 
         return Reader._format_text(text)
-    
+
     @staticmethod
     def _format_text(text: List[str]) -> List[namedtuple]:
         """
@@ -55,7 +55,7 @@ class Reader(IReader):
         Args:
             text:
                 Text read in from [`read_from_file`][OptsFile.reader.Reader].
-            
+
         Returns:
             entries:
                 A list of tuples with the number of tabs and the entry items.
@@ -67,11 +67,11 @@ class Reader(IReader):
             line: str = line.rstrip()
             split_option: str = Reader._check_for_tabs(line)
             depth: int = line.count(split_option)
-            content: List[str] = line[len(split_option) * depth: ].split(" ")
+            content: List[str] = line[len(split_option) * depth :].split(" ")
             entries.append(entry(depth, content))
 
         return entries
-    
+
     @staticmethod
     def _check_for_tabs(line: str) -> str:
         """
