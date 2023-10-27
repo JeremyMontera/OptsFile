@@ -1,5 +1,6 @@
 import os
 import pathlib
+from collections import namedtuple
 from typing import Any, Dict, List
 
 from .abc import IReader, IReadNode
@@ -33,7 +34,61 @@ class Reader(IReader):
                 The (modified) plain text.
         """
 
-        ...
+        with open(self._filename, "r") as of:
+            text: List[str] = of.readlines()
+
+        return Reader._format_text(text)
+    
+    @staticmethod
+    def _format_text(text: List[str]) -> List[namedtuple]:
+        """
+        This private method will format the text in a way for the parser to consume. It
+        will not only strip the newline character from the end of each line, but it
+        will also count the number of tabs and will split the line on spaces.
+
+        Example:
+            >>> text = ["\t\tfoo bar\n", "\t\tspam:\n", "\t\t\tturtle: duck\n"]
+            >>> entries = Reader._format_text(text)
+            >>> entries
+            [(2, "foo", "bar"), (2, "spam:"), (3, "turtle", "duck")]
+
+        Args:
+            text:
+                Text read in from [`read_from_file`][OptsFile.reader.Reader].
+            
+        Returns:
+            entries:
+                A list of tuples with the number of tabs and the entry items.
+        """
+
+        entry: namedtuple = namedtuple("entry", ["depth", "content"])
+        entries: List[namedtuple] = []
+        for line in text:
+            line: str = line.rstrip()
+            split_option: str = Reader._check_for_tabs(line)
+            depth: int = line.count(split_option)
+            content: List[str] = line[len(split_option) * depth: ].split(" ")
+            entries.append(entry(depth, content))
+
+        return entries
+    
+    @staticmethod
+    def _check_for_tabs(line: str) -> str:
+        """
+        This private method will check if there are any tabs. Since linters like to
+        replace tabs with whitespaces, we need to check if this has happened.
+
+        Args:
+            line:
+                A line of text we are checking if there are tabs.
+
+        Returns:
+            split_option:
+                If there are tabs, then this will be `'\t'`. If there are no tabs, then
+                this will be `'    '`.
+        """
+
+        return "\t" if "\t" in line else "    "
 
     def parse_text(self, text: List[str], parser: object) -> Dict[Any, Any]:
         """
