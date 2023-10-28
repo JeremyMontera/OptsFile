@@ -1,0 +1,7 @@
+opt1:
+    red: one
+    blue: two
+
+opt2:
+    foo: bar
+    eggs: ham
