@@ -47,7 +47,7 @@ class IReader(metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractmethod
-    def parse_text(self, text: List[str], parser: IReadNode) -> Dict[Any, Any]:
+    def parse_text(self, text: List[str]) -> Dict[Any, Any]:
         """
         This will convert the text read in from the target file into a dictionary. This
         parsing will involve using a tree data structure and will collapse it into the
@@ -56,8 +56,6 @@ class IReader(metaclass=abc.ABCMeta):
         Args:
             text:
                 The (modified) plain text.
-            parser:
-                The parser (added here in case we come up with other ways of parsing).
 
         Returns:
             options:
