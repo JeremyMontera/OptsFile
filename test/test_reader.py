@@ -81,7 +81,7 @@ def test_reader_format_text(
     [
         ("tabs", "\t\tBlah", "\t"),
         ("spaces", "        Blah", "    "),
-        ("error", "Blah", ""),
+        ("error", " Blah", ""),
     ],
 )
 def test_reader_check_for_tabs(scenario, content, result):

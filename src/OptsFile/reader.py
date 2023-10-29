@@ -4,6 +4,7 @@ from collections import namedtuple
 from typing import Any, Dict, List
 
 from .abc import IReader
+from .read_node import ReadNode
 
 
 class ReaderError(Exception):
@@ -92,12 +93,14 @@ class Reader(IReader):
                 this will be `'    '`.
         """
 
-        if "\t" not in line and "    " not in line:
+        if "\t" not in line and "    " not in line and line[0] == " ":
             raise ReaderError("***ERROR***:\tThe current line seems to be malformed!")
 
         return "\t" if "\t" in line else "    "
 
-    def parse_text(self, text: List[str], parser: object) -> Dict[Any, Any]:
+    def parse_text(
+        self, entries: List[namedtuple], parser: ReadNode
+    ) -> Dict[Any, Any]:
         """
         This will convert the text read in from the target file into a dictionary. This
         parsing will involve using a tree data structure and will collapse it into the
@@ -105,7 +108,7 @@ class Reader(IReader):
 
         Args:
             text:
-                The (modified) plain text.
+                A list of tuples with the number of tabs and the entry items.
             parser:
                 The parser (added here in case we come up with other ways of parsing).
 
@@ -114,4 +117,6 @@ class Reader(IReader):
                 The nested dictionary containing all of the user options.
         """
 
-        ...
+        root: ReadNode = ReadNode("*")
+        for entry in entries:
+            depth, content = entry.depth, entry.content
