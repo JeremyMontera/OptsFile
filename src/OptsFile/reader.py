@@ -73,10 +73,11 @@ class Reader(IReader):
             split_option: str = Reader._check_for_tabs(line)
             depth: int = line.count(split_option)
             content: List[str] = line[len(split_option) * depth :].split(" ")
-            if depth == 0 and len(content) == 0:
+            if depth == 0 and len(content) == 1:
                 continue
 
             if len(content) == 1:
+                print(f"{content}")
                 content[0] = Reader._remove_column(content[0])
             
             entries.append(entry(depth, content))
