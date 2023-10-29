@@ -31,11 +31,10 @@ def sample_optsfile_text():
 def sample_text_format_output():
     entry = collections.namedtuple("entry", ["depth", "content"])
     return [
-        entry(0, ["Car:"]),
+        entry(0, ["Car"]),
         entry(1, ["Make:", "Honda"]),
         entry(1, ["Model:", "Accord"]),
-        entry(0, [""]),
-        entry(0, ["Bike:"]),
+        entry(0, ["Bike"]),
         entry(1, ["Type:", "Mountain"]),
     ]
 
@@ -71,7 +70,7 @@ def test_reader_format_text(
     entries = Reader._format_text(sample_optsfile_text)
     assert "depth" in entries[0]._fields
     assert "content" in entries[0]._fields
-    assert len(entries) == len(sample_optsfile_text)
+    assert len(entries) == len(sample_optsfile_text) - 1
     for entry1, entry2 in zip(entries, sample_text_format_output):
         assert entry1 == entry2
 
@@ -95,3 +94,21 @@ def test_reader_check_for_tabs(scenario, content, result):
 
     else:
         assert Reader._check_for_tabs(content) == result
+
+@pytest.mark.parametrize(
+    ("scenario", "content", "result"),
+    [
+        ("column", "Line:", "Line"),
+        ("no column", "Line", ""),
+    ]
+)
+def test_reader_remove_column(scenario, content, result):
+    reader = Reader("sample.of")
+    if scenario == "no column":
+        with pytest.raises(ReaderError) as exc:
+            reader._remove_column(content)
+
+        assert exc.value.args[0] == "***ERROR***:\tThe current line seems to be malformed!"
+
+    else:
+        assert reader._remove_column(content) == result
