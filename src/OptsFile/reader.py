@@ -73,7 +73,7 @@ class Reader(IReader):
             split_option: str = Reader._check_for_tabs(line)
             depth: int = line.count(split_option)
             content: List[str] = line[len(split_option) * depth :].split(" ")
-            if depth == 0 and len(content) == 1:
+            if depth == 0 and content[0] == "":
                 continue
 
             if len(content) == 1:
