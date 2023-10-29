@@ -70,6 +70,7 @@ class Reader(IReader):
         entries: List[namedtuple] = []
         for line in text:
             line: str = line.rstrip()
+            print(f"{line}")
             split_option: str = Reader._check_for_tabs(line)
             depth: int = line.count(split_option)
             content: List[str] = line[len(split_option) * depth :].split(" ")
@@ -77,7 +78,6 @@ class Reader(IReader):
                 continue
 
             if len(content) == 1:
-                print(f"{content}")
                 content[0] = Reader._remove_column(content[0])
             
             entries.append(entry(depth, content))
@@ -145,6 +145,34 @@ class Reader(IReader):
         """
 
         root: ReadNode = ReadNode("*")
+        current_depth: int = 0
+        current_parent_nodes: List[ReadNode] = []
         for entry in entries:
             depth, content = entry.depth, entry.content
-            
+
+            if len(content) == 1:
+                new_node: ReadNode = ReadNode(f"{content[0]}")
+                current_parent_nodes.append(new_node)
+                current_depth += 1
+            else:
+                new_node: ReadNode = ReadNode(
+                    f"{content[0]}", content=f"{content[1]}"
+                )
+
+                if depth < current_depth and depth > 0:
+                    while (len(current_parent_nodes) > depth + 1):
+                        current_parent_nodes[depth].add_child_node(
+                            current_parent_nodes.pop()
+                        )
+
+                elif depth > current_depth or depth == 0:
+                    raise ReaderError(
+                        "***ERROR***:\tThe current line seems to be malformed!"
+                    )
+                
+                current_parent_nodes[-1].add_child_node(new_node)
+
+        while current_parent_nodes:
+            root.add_child_node(current_parent_nodes.pop())
+
+        return root.collapse()
