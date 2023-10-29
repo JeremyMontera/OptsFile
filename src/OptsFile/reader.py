@@ -73,6 +73,13 @@ class Reader(IReader):
             split_option: str = Reader._check_for_tabs(line)
             depth: int = line.count(split_option)
             content: List[str] = line[len(split_option) * depth :].split(" ")
+            if depth == 0 and content[0] == "":
+                continue
+
+            if len(content) == 1:
+                print(f"{content}")
+                content[0] = Reader._remove_column(content[0])
+            
             entries.append(entry(depth, content))
 
         return entries
@@ -97,6 +104,30 @@ class Reader(IReader):
             raise ReaderError("***ERROR***:\tThe current line seems to be malformed!")
 
         return "\t" if "\t" in line else "    "
+    
+    @staticmethod
+    def _remove_column(content: str) -> str:
+        """
+        This will remove a column from the end of the subcategory line.
+
+        Example:
+            >>> example = "Foo:"
+            >>> Reader._remove_column(example)
+            "Foo"
+
+        Args:
+            content:
+                Category line (will be the only item on the line).
+
+        Returns:
+            content:
+                The modified line (the column stripped).
+        """
+
+        if content[-1] != ":":
+            raise ReaderError("***ERROR***:\tThe current line seems to be malformed!")
+        
+        return content[:-1]
 
     def parse_text(
         self, entries: List[namedtuple], parser: ReadNode
