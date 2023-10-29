@@ -98,9 +98,7 @@ class Reader(IReader):
 
         return "\t" if "\t" in line else "    "
 
-    def parse_text(
-        self, entries: List[namedtuple], parser: ReadNode
-    ) -> Dict[Any, Any]:
+    def parse_text(self, entries: List[namedtuple]) -> Dict[Any, Any]:
         """
         This will convert the text read in from the target file into a dictionary. This
         parsing will involve using a tree data structure and will collapse it into the
@@ -109,8 +107,6 @@ class Reader(IReader):
         Args:
             text:
                 A list of tuples with the number of tabs and the entry items.
-            parser:
-                The parser (added here in case we come up with other ways of parsing).
 
         Returns:
             options:
@@ -120,3 +116,4 @@ class Reader(IReader):
         root: ReadNode = ReadNode("*")
         for entry in entries:
             depth, content = entry.depth, entry.content
+            
